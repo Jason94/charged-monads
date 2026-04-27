@@ -12,6 +12,12 @@
    #:lift-contT
 
    #:call-cc
+   #:resetT
+   #:reset
+   #:do-resetT
+   #:do-reset
+   #:shiftT
+   #:shift
 
    #:Cont
    #:run-cont
@@ -69,6 +75,30 @@
                      (ContT%
                       (fn (_)
                         (a->r2 a)))))))))
+
+  (inline)
+  (declare resetT (Monad :m => ContT :m :r :a :a -> :m :r))
+  (define (resetT cont)
+    (run-contT pure cont))
+
+  (inline)
+  (declare reset (Cont :r :a :a -> :r))
+  (define (reset cont)
+    (run-cont id cont))
+
+  (inline)
+  (declare shiftT (Monad :m => ((:a -> :m :r2) -> :m :r1) -> ContT :m :r1 :r2 :a))
+  (define (shiftT a->r2-->r1)
+    (ContT%
+     (fn (a->r2)
+       (a->r2-->r1 a->r2))))
+
+  (inline)
+  (declare shift (((:a -> :r2) -> :r1) -> Cont :r1 :r2 :a))
+  (define (shift a->r2-->r1)
+    (ContT%
+     (fn (a->mr2)
+       (pure (a->r2-->r1 (map run-identity a->mr2))))))
 
   (define-instance (Functor (ContT :m :r1 :r2))
     (inline)
@@ -148,3 +178,13 @@
     (define pt-lift lift-contT))
 
   )
+
+(defmacro do-resetT (cl:&body body)
+  `(resetT
+    (do
+     ,@body)))
+
+(defmacro do-reset (cl:&body body)
+  `(reset
+    (do
+     ,@body)))
