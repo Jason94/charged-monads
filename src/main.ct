@@ -6,7 +6,7 @@
    #:pt-lifta2
    #:PtMonad
    #:pt-bind
-   #:pt-do)
+   #:pt-do))
 
 (cl:in-package #:indexed-monads)
 

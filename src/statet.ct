@@ -2,6 +2,14 @@
   (:use #:coalton #:coalton-prelude #:indexed-monads)
   (:export
    #:PtStateT
+   #:run-stateT
+   #:eval-stateT
+   #:map-stateT
+   #:lift-stateT
+    
+   #:put-stateT
+   #:get-stateT
+   #:modify-stateT
   ))
 
 (cl:in-package #:indexed-monads/stateT)
@@ -9,29 +17,50 @@
 (coalton-toplevel
 
   (repr :transparent)
-  (define-type (PtStateT :s1 :s2 :m :a)
+  (define-type (PtStateT :m :s1 :s2 :a)
     (PtStT% (:s1 -> :m (Tuple :s2 :a))))
   
   (inline)
-  (declare run-stateT (:s1 * PtStateT :s1 :s2 :m :a -> :m (Tuple :s2 :a)))
+  (declare run-stateT (:s1 * PtStateT :m :s1 :s2 :a -> :m (Tuple :s2 :a)))
   (define (run-stateT s (PtStT% f-st))
     (f-st s))
   
   (inline)
-  (declare eval-stateT (Functor :m => :s1 * PtStateT :s1 :s2 :m :a -> :m :a))
+  (declare eval-stateT (Functor :m => :s1 * PtStateT :m :s1 :s2 :a -> :m :a))
   (define (eval-stateT s (PtStT% f-st))
     (map (fn ((Tuple _ a))
            a)
          (f-st s)))
   
   (inline)
-  (declare map-stateT ((:m (Tuple :s2 :a) -> :n (Tuple :s3 :b)) * PtStateT :s1 :s2 :m :a -> PtStateT :s1 :s3 :n :b))
+  (declare map-stateT ((:m (Tuple :s2 :a) -> :n (Tuple :s3 :b)) * PtStateT :m :s1 :s2 :a -> PtStateT :n :s1 :s3 :b))
   (define (map-statet f-msta->nstb m-sta)
     (PtStT%
       (fn (s1)
         (f-msta->nstb (run-stateT s1 m-sta)))))
+ 
+  (inline)
+  (declare put-stateT (Applicative :m => :s2 -> PtStateT :m :s1 :s2 Unit))
+  (define (put-stateT s)
+    (PtStT%
+      (fn (_)
+        (pure (Tuple s Unit)))))
   
-  (define-instance (Functor :m => Functor (PtStateT :s1 :s2 :m))
+  (inline)
+  (declare get-stateT (Applicative :m => Void -> PtStateT :m :s :s :s))
+  (define (get-stateT)
+    (PtStT%
+      (fn (s)
+        (pure (Tuple s s)))))
+  
+  (inline)
+  (declare modify-stateT (Applicative :m => (:s1 -> :s2) -> PtStateT :m :s1 :s2 Unit))
+  (define (modify-stateT f-st)
+    (PtStT%
+      (fn (s)
+        (pure (Tuple (f-st s) Unit)))))
+
+  (define-instance (Functor :m => Functor (PtStateT :m :s1 :s2))
     (inline)
     (define (map f st)
       (PtStT%
@@ -40,7 +69,7 @@
                  (Tuple s2 (f a)))
                (run-stateT s1 st))))))
   
-  (define-instance (Applicative :m => Applicative (PtStateT :s1 :s2 :m))
+  (define-instance (Applicative :m => Applicative (PtStateT :m :s1 :s2))
     (inline)
     (define (pure a)
       (PtStT%
@@ -55,7 +84,7 @@
                   (run-stateT s st-a)
                   (run-stateT s st-b))))))
   
-  (define-instance (Monad :m => Monad (PtStateT :s1 :s2 :m))
+  (define-instance (Monad :m => Monad (PtStateT :m :s1 :s2))
     (inline)
     (define (>>= st-a a->st-b)
       (PtStT%
@@ -63,13 +92,36 @@
           (>>= (run-stateT s1 st-a)
                (fn ((Tuple s2 a))
                  (run-stateT s2 (a->st-b a))))))))
+
+  (inline)
+  (declare lift-stateT (Functor :m => :m :a -> PtStateT :m :s1 :s1 :a))
+  (define (lift-stateT m)
+    (PtStT%
+      (fn (s)
+        (map (fn (a)
+               (Tuple s a))
+             m))))
   
-  (define-instance (MonadTransformer (PtStateT :s1 :s2))
+  (define-instance (Monad :m => PtApplicative (PtStateT :m))
     (inline)
-    (define (lift m)
+    (define (pt-pure a)
+      (pure a))
+    (inline)
+    (define (pt-lifta2 fa-b->c st-a st-b)
       (PtStT%
-        (fn (s)
-          (map (fn (a)
-                 (Tuple s a))
-               m)))))
+        (fn (s1)
+          (>>= (run-stateT s1 st-a)
+               (fn ((Tuple s2 a))
+                 (map (fn ((Tuple s3 b))
+                        (Tuple s3 (fa-b->c a b)))
+                      (run-stateT s2 st-b))))))))
+
+  (define-instance (Monad :m => PtMonad (PtStateT :m))
+    (inline)
+    (define (pt-bind st-a fa->m-b)
+      (PtStT%
+        (fn (s1)
+          (>>= (run-stateT s1 st-a)
+               (fn ((Tuple s2 a))
+                 (run-stateT s2 (fa->m-b a))))))))
   )
