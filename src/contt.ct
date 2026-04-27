@@ -9,6 +9,9 @@
    #:run-contT
    #:eval-contT
    #:map-contT
+   #:lift-contT
+
+   #:call-cc
 
    #:Cont
    #:run-cont
@@ -54,6 +57,18 @@
        (run-contT (fn (a)
                     (mr3->mr2 (a->mr3 a)))
                   cont))))
+
+  (inline)
+  (declare call-cc (((:a -> ContT :m :r2 :r3 :b) -> ContT :m :r1 :r2 :a) -> ContT :m :r1 :r2 :a))
+  (define (call-cc a->cr2-->cr1)
+    (ContT%
+     (fn (a->r2)
+       (run-contT a->r2
+                  (a->cr2-->cr1
+                   (fn (a)
+                     (ContT%
+                      (fn (_)
+                        (a->r2 a)))))))))
 
   (define-instance (Functor (ContT :m :r1 :r2))
     (inline)
@@ -119,4 +134,17 @@
 
   (define-instance (PtMonad (ContT :m))
     (define pt-bind pt-bind-contT))
+
+  (define-type-alias (Foo :r1 :r2 :m :a) (ContT :m :r1 :r2 :a))
+
+  (inline)
+  (declare lift-contT (Monad :m => :m :a -> ContT :m :r :r :a))
+  (define (lift-contT m)
+    (ContT%
+     (fn (a->mr)
+       (>>= m a->mr))))
+
+  (define-instance (PtMonadTransformer ContT)
+    (define pt-lift lift-contT))
+
   )

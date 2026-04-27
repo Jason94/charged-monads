@@ -6,6 +6,8 @@
   :components
   (
     (:ct-file "main")
-	(:ct-file "state")
+    (:ct-file "state")
+    (:ct-file "statet")
+    (:ct-file "contt")
   )
 )

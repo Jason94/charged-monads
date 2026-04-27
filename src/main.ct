@@ -6,7 +6,9 @@
    #:pt-lifta2
    #:PtMonad
    #:pt-bind
-   #:pt-do))
+   #:pt-do
+   #:PtMonadTransformer
+   #:pt-lift))
 
 (cl:in-package #:indexed-monads)
 
@@ -17,7 +19,11 @@
     (pt-lifta2 ((:a * :b -> :c) * :m :i :j :a * :m :j :k :b -> :m :i :k :c)))
   
   (define-class (PtApplicative :m => PtMonad :m)
-    (pt-bind (:m :i :j :a * (:a -> :m :j :k :b) -> :m :i :k :b))))
+    (pt-bind (:m :i :j :a * (:a -> :m :j :k :b) -> :m :i :k :b)))
+
+  (define-class (PtMonadTransformer :t)
+    (pt-lift (Monad :m => :m :a -> :t :m :i :i :a)))
+  )
 
 (defmacro pt-do (cl:&body body)
   (cl:labels
