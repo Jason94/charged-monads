@@ -1,0 +1,122 @@
+(cl:defpackage #:indexed-monads/contT
+  (:use
+   #:coalton
+   #:coalton-prelude
+   #:coalton/monad/identity
+   #:indexed-monads)
+  (:export
+   #:ContT
+   #:run-contT
+   #:eval-contT
+   #:map-contT
+
+   #:Cont
+   #:run-cont
+   #:eval-cont
+  ))
+
+(cl:in-package #:indexed-monads/contT)
+
+(coalton-toplevel
+
+  (repr :transparent)
+  (define-type (ContT :m :r1 :r2 :a)
+    (ContT% ((:a -> :m :r2) -> :m :r1)))
+
+  ;; TODO: Define Cont separately (like State) for efficiency reasons
+  (define-type-alias Cont (ContT Identity))
+
+  (inline)
+  (declare run-contT ((:a -> :m :r2) * ContT :m :r1 :r2 :a -> :m :r1))
+  (define (run-contT cont (ContT% thunk))
+    (thunk cont))
+
+  (inline)
+  (declare eval-contT (Applicative :m => ContT :m :r :r :r -> :m :r))
+  (define (eval-contT cont)
+    (run-contT pure cont))
+
+  (inline)
+  (declare run-cont ((:a -> :r2) * Cont :r1 :r2 :a -> :r1))
+  (define (run-cont final-cont cont)
+    (run-identity (run-contT (map pure final-cont)
+                             cont)))
+
+  (inline)
+  (declare eval-cont (Cont :r :r :r -> :r))
+  (define (eval-cont cont)
+    (run-cont id cont))
+
+  (declare map-contT ((:m :r3 -> :m :r2) * ContT :m :r1 :r2 :a -> ContT :m :r1 :r3 :a))
+  (define (map-contT mr3->mr2 cont)
+    (ContT%
+     (fn (a->mr3)
+       (run-contT (fn (a)
+                    (mr3->mr2 (a->mr3 a)))
+                  cont))))
+
+  (define-instance (Functor (ContT :m :r1 :r2))
+    (inline)
+    (define (map fa->b cont)
+      (ContT%
+       (fn (b->mr2)
+         (run-contT (fn (a)
+                      (b->mr2 (fa->b a)))
+                    cont)))))
+
+  (inline)
+  (declare pure-contT (:a -> ContT :m :r :r :a))
+  (define (pure-contT a)
+    (ContT%
+     (fn (a->mr)
+       (a->mr a))))
+
+  (inline)
+  (declare pt-lifta2-contT ((:a * :b -> :c) * ContT :m :r1 :r2 :a * ContT :m :r2 :r3 :b -> ContT :m :r1 :r3 :c))
+  (define (pt-lifta2-contT fa-b->c cont-a cont-b)
+    (ContT%
+     (fn (c->mr3)
+       (run-contT (fn (a)
+                    (run-contT (fn (b)
+                                 (c->mr3 (fa-b->c a b)))
+                               cont-b))
+                    cont-a))))
+
+  (define-instance (Applicative (ContT :m :r :r))
+    (define pure pure-contT)
+    (define lifta2 pt-lifta2-contT))
+
+  (inline)
+  (declare bind-contT (ContT :m :r :r :a * (:a -> ContT :m :r :r :b) -> ContT :m :r :r :b))
+  (define (bind-contT cont-a a->contb)
+    (ContT%
+     (fn (b->mr)
+       (run-contT (fn (a)
+                    (run-contT (fn (b)
+                                 (b->mr b))
+                               (a->contb a)))
+                  cont-a))))
+
+  (define-instance (Monad (ContT :m :r :r))
+    (define >>= bind-contT))
+
+  (define-instance (PtApplicative (ContT :m))
+    (define pt-pure pure-contT)
+    (define pt-lifta2 pt-lifta2-contT))
+
+  (inline)
+  (declare pt-bind-contT (ContT :m :r1 :r2 :a * (:a -> ContT :m :r2 :r3 :b) -> ContT :m :r1 :r3 :b))
+  (define (pt-bind-contT cont-a a->cont-b)
+    (ContT%
+     (fn (b->mr1)
+       (run-contT
+        (fn (a)
+          (run-contT
+           (fn (b)
+             (b->mr1 b))
+           (a->cont-b a)))
+        cont-a))))
+
+  (define-instance (PtMonad (ContT :m))
+    (define pt-bind pt-bind-contT))
+  )
