@@ -1,0 +1,75 @@
+(cl:defpackage #:indexed-monads/stateT
+  (:use #:coalton #:coalton-prelude #:indexed-monads)
+  (:export
+   #:PtStateT
+  ))
+
+(cl:in-package #:indexed-monads/stateT)
+
+(coalton-toplevel
+
+  (repr :transparent)
+  (define-type (PtStateT :s1 :s2 :m :a)
+    (PtStT% (:s1 -> :m (Tuple :s2 :a))))
+  
+  (inline)
+  (declare run-stateT (:s1 * PtStateT :s1 :s2 :m :a -> :m (Tuple :s2 :a)))
+  (define (run-stateT s (PtStT% f-st))
+    (f-st s))
+  
+  (inline)
+  (declare eval-stateT (Functor :m => :s1 * PtStateT :s1 :s2 :m :a -> :m :a))
+  (define (eval-stateT s (PtStT% f-st))
+    (map (fn ((Tuple _ a))
+           a)
+         (f-st s)))
+  
+  (inline)
+  (declare map-stateT ((:m (Tuple :s2 :a) -> :n (Tuple :s3 :b)) * PtStateT :s1 :s2 :m :a -> PtStateT :s1 :s3 :n :b))
+  (define (map-statet f-msta->nstb m-sta)
+    (PtStT%
+      (fn (s1)
+        (f-msta->nstb (run-stateT s1 m-sta)))))
+  
+  (define-instance (Functor :m => Functor (PtStateT :s1 :s2 :m))
+    (inline)
+    (define (map f st)
+      (PtStT%
+        (fn (s1)
+          (map (fn ((Tuple s2 a))
+                 (Tuple s2 (f a)))
+               (run-stateT s1 st))))))
+  
+  (define-instance (Applicative :m => Applicative (PtStateT :s1 :s2 :m))
+    (inline)
+    (define (pure a)
+      (PtStT%
+        (fn (s)
+          (pure (Tuple s a)))))
+    (inline)
+    (define (lifta2 fa-b->c st-a st-b)
+      (PtStT%
+        (fn (s)
+          (lifta2 (fn ((Tuple _ a) (Tuple _ b))
+                    (Tuple s (fa-b->c a b)))
+                  (run-stateT s st-a)
+                  (run-stateT s st-b))))))
+  
+  (define-instance (Monad :m => Monad (PtStateT :s1 :s2 :m))
+    (inline)
+    (define (>>= st-a a->st-b)
+      (PtStT%
+        (fn (s1)
+          (>>= (run-stateT s1 st-a)
+               (fn ((Tuple s2 a))
+                 (run-stateT s2 (a->st-b a))))))))
+  
+  (define-instance (MonadTransformer (PtStateT :s1 :s2))
+    (inline)
+    (define (lift m)
+      (PtStT%
+        (fn (s)
+          (map (fn (a)
+                 (Tuple s a))
+               m)))))
+  )
