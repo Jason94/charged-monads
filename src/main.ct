@@ -1,0 +1,91 @@
+(cl:defpackage #:indexed-monads
+  (:use #:coalton #:coalton-prelude)
+  (:export
+   #:PtApplicative
+   #:pt-pure
+   #:pt-lifta2
+   #:PtMonad
+   #:pt-bind
+   #:pt-do)
+
+(cl:in-package #:indexed-monads)
+
+(coalton-toplevel
+
+  (define-class (PtApplicative :m)
+    (pt-pure (:a -> :m :i :i :a))
+    (pt-lifta2 ((:a * :b -> :c) * :m :i :j :a * :m :j :k :b -> :m :i :k :c)))
+  
+  (define-class (PtApplicative :m => PtMonad :m)
+    (pt-bind (:m :i :j :a * (:a -> :m :j :k :b) -> :m :i :k :b))))
+
+(defmacro pt-do (cl:&body body)
+  (cl:labels
+      ((symbol-named-p (x name)
+         (cl:and (cl:symbolp x)
+                 (cl:string= (cl:symbol-name x) name)))
+
+       (bind-form-p (form)
+         (cl:and (cl:consp form)
+                 (symbol-named-p (cl:second form) "<-")))
+
+       (shorthand-let-form-p (form)
+         (cl:and (cl:consp form)
+                 (symbol-named-p (cl:first form) "LET")
+                 (cl:= 4 (cl:length form))
+                 (symbol-named-p (cl:third form) "=")))
+
+       (parse-bind-form (form)
+         (cl:if (cl:= 3 (cl:length form))
+                (cl:values (cl:first form)
+                           (cl:third form))
+                (cl:error "Invalid pt-do bind form. Expected (pattern <- expr), got: ~S"
+                          form)))
+
+       (parse-shorthand-let-form (form)
+         (cl:if (shorthand-let-form-p form)
+                (cl:values (cl:second form)
+                           (cl:fourth form))
+                (cl:error "Invalid pt-do shorthand let. Expected (let pattern = expr), got: ~S"
+                          form)))
+
+       (expand-step (form rest)
+         (cl:cond
+           ((bind-form-p form)
+            (cl:multiple-value-bind (pattern expr)
+                (parse-bind-form form)
+              `(pt-bind ,expr
+                        (coalton:fn (,pattern)
+                          ,rest))))
+
+           ((shorthand-let-form-p form)
+            (cl:multiple-value-bind (pattern expr)
+                (parse-shorthand-let-form form)
+              `(coalton:progn
+                 (coalton:let ,pattern coalton:= ,expr)
+                 ,rest)))
+
+           (cl:t
+            `(pt-bind ,form
+                      (coalton:fn (coalton:_)
+                        ,rest)))))
+
+       (expand-forms (forms)
+         (cl:if (cl:null (cl:rest forms))
+                (cl:first forms)
+                (expand-step (cl:first forms)
+                             (expand-forms (cl:rest forms))))))
+
+    (cl:if (cl:null body)
+           (cl:error "pt-do expected one or more forms.")
+           (cl:progn
+             (cl:when (bind-form-p (cl:first (cl:last body)))
+               (cl:error "pt-do cannot be terminated by a bind: ~S"
+                         (cl:first (cl:last body))))
+
+             (cl:when (shorthand-let-form-p (cl:first (cl:last body)))
+               (cl:error "pt-do cannot be terminated by a shorthand let: ~S"
+                         (cl:first (cl:last body))))
+
+             (expand-forms body)))))
+

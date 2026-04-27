@@ -1,0 +1,112 @@
+(cl:defpackage #:indexed-monads/state
+  (:use #:coalton #:coalton-prelude #:indexed-monads)
+  (:export
+   #:PtState
+   #:run-state
+   #:eval-state
+   #:get
+   #:put
+   #:modify
+  ))
+
+(cl:in-package #:indexed-monads/state)
+
+(coalton-toplevel
+
+  (repr :transparent)
+  (define-type (PtState :s1 :s2 :a)
+    (PtSt% (:s1 -> :s2 * :a)))
+  
+  (inline)
+  (declare run-state (:s1 * PtState :s1 :s2 :a -> :s2 * :a))
+  (define (run-state st (PtSt% f-state))
+    (f-state st))
+  
+  (inline)
+  (declare eval-state (:s1 * PtState :s1 :s2 :a -> :a))
+  (define (eval-state st (PtSt% f-state))
+    (let (values _ result) = (f-state st))
+    result)
+  
+  (declare get (PtState :s :s :s))
+  (define get
+    (PtSt%
+      (fn (s)
+        (values s s))))
+  
+  (inline)
+  (declare put (:s2 -> PtState :s1 :s2 Unit))
+  (define (put s)
+    (PtSt%
+      (fn (_)
+        (values s Unit))))
+
+  (inline)  
+  (declare modify ((:s1 -> :s2) -> PtState :s1 :s2 Unit))
+  (define (modify f-st)
+    (PtSt%
+      (fn (s1)
+        (values (f-st s1) Unit))))
+  
+  (define-instance (Functor (PtState :s :s))
+    (inline)
+    (define (map f st)
+      (PtSt%
+        (fn (s)
+          (values s 
+                  (f (eval-state s st)))))))
+  
+  (define-instance (Applicative (PtState :s :s))
+    (inline)
+    (define (pure a)
+      (PtSt%
+        (fn (s)
+          (values s a))))
+    (inline)
+    (define (lifta2 fa-b->c st-a st-b)
+      (PtSt%
+        (fn (s1)
+          (let (values s2 a) = (run-state s1 st-a))
+          (let (values s3 b) = (run-state s2 st-b))
+          (values s3 (fa-b->c a b))))))
+  
+  (define-instance (PtApplicative PtState)
+    (inline)
+    (define (pt-pure a)
+      (PtSt%
+        (fn (s)
+          (values s a))))
+    (inline)
+    (define (pt-lifta2 fa-b->c st-a st-b)
+      (PtSt%
+        (fn (s1)
+          (let (values s2 a) = (run-state s1 st-a))
+          (let (values s3 b) = (run-state s2 st-b))
+          (values s3 (fa-b->c a b))))))
+  
+  (define-instance (Monad (PtState :s :s))
+    (inline)
+    (define (>>= st-a fa->mb)
+      (PtSt%
+        (fn (s1)
+          (let (values s2 a) = (run-state s1 st-a))
+          (run-state s2 (fa->mb a))))))
+  
+  (define-instance (PtMonad PtState)
+    (inline)
+    (define (pt-bind st-a fa->mb)
+      (PtSt%
+        (fn (s1)
+          (let (values s2 a) = (run-state s1 st-a))
+          (run-state s2 (fa->mb a))))))
+  )
+
+(cl:defun test ()
+  (coalton
+    (run-state 0
+      (pt-do
+        get
+        (modify (fn (x) (<> "100" (show-as-string x))))
+        (let y = 10)
+        (put y)
+        ))))
