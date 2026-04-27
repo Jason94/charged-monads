@@ -1,4 +1,4 @@
-(cl:defpackage #:indexed-monads
+(cl:defpackage #:charged-monads
   (:use #:coalton #:coalton-prelude)
   (:export
    #:PtApplicative
@@ -10,7 +10,7 @@
    #:PtMonadTransformer
    #:pt-lift))
 
-(cl:in-package #:indexed-monads)
+(cl:in-package #:charged-monads)
 
 (coalton-toplevel
 

@@ -1,9 +1,9 @@
-(cl:defpackage #:indexed-monads/contT
+(cl:defpackage #:charged-monads/contT
   (:use
    #:coalton
    #:coalton-prelude
    #:coalton/monad/identity
-   #:indexed-monads)
+   #:charged-monads)
   (:export
    #:ContT
    #:run-contT
@@ -24,7 +24,7 @@
    #:eval-cont
   ))
 
-(cl:in-package #:indexed-monads/contT)
+(cl:in-package #:charged-monads/contT)
 
 (coalton-toplevel
 

@@ -1,4 +1,4 @@
-(cl:defpackage #:indexed-monads/test
+(cl:defpackage #:charged-monads/test
   (:use
    #:coalton
    #:coalton-prelude
@@ -6,13 +6,13 @@
    #:coalton/experimental/do-control-core
    #:io/simple-io
    #:io/term
-   #:indexed-monads
-   #:indexed-monads/contT
+   #:charged-monads
+   #:charged-monads/contT
    )
   (:import-from #:coalton/string
    #:parse-int))
 
-(cl:in-package #:indexed-monads/test)
+(cl:in-package #:charged-monads/test)
 
 (cl:defun test1 ()
   (coalton

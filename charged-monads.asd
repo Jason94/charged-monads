@@ -1,4 +1,4 @@
-(asdf:defsystem "parameterized-monads"
+(asdf:defsystem "charged-monads"
   :defsystem-depends-on ("coalton-asdf")
   :depends-on ("coalton")
   :pathname "src/"
