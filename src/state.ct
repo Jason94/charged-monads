@@ -7,7 +7,8 @@
    #:get
    #:put
    #:modify
-  ))
+  )
+)
 
 (cl:in-package #:indexed-monads/state)
 
@@ -109,4 +110,4 @@
         (modify (fn (x) (<> "100" (show-as-string x))))
         (let y = 10)
         (put y)
-        ))))
+        ))))
