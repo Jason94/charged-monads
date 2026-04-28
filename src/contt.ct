@@ -128,7 +128,7 @@
                                cont-b))
                     cont-a))))
 
-  (define-instance (Applicative (ContT :m :r :r))
+  (define-instance (Applicative (ContT :m :r1 :r2))
     (define pure pure-contT)
     (define lifta2 pt-lifta2-contT))
 
@@ -143,7 +143,7 @@
                                (a->contb a)))
                   cont-a))))
 
-  (define-instance (Monad (ContT :m :r :r))
+  (define-instance (Monad (ContT :m :r1 :r2))
     (define >>= bind-contT))
 
   (define-instance (PtApplicative (ContT :m))

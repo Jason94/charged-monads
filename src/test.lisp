@@ -8,6 +8,7 @@
    #:io/term
    #:charged-monads
    #:charged-monads/contT
+   #:charged-monads/state
    )
   (:import-from #:coalton/string
    #:parse-int))
@@ -34,6 +35,17 @@
                 (resume Unit))
               (pt-lift (write-line "Number >= 0"))))))
        (pure Unit))))))
+
+(coalton-toplevel
+  (declare test-shift (Void -> List Integer))
+  (define (test-shift)
+   (do-reset
+     (x <- (shift
+            (fn (k)
+              (make-list (k 1) (k 2) (k 3)))))
+     (pure (* 10 x)))))
+
+(coalton (test-shift))
 
 ;; (coalton
 ;;  (the (List String)
