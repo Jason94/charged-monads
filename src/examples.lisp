@@ -40,11 +40,11 @@
 (coalton-toplevel
   (declare test-shift (Void -> List Integer))
   (define (test-shift)
-   (do-reset
+   (pt-do-reset
      (x <- (shift
             (fn (k)
               (make-list (k 1) (k 2) (k 3)))))
-     (pure (* 10 x)))))
+     (pt-pure (* 10 x)))))
 
 (coalton-toplevel
   (inline)

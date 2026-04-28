@@ -56,7 +56,7 @@
           (let (values s2 a) = (run-state s st))
           (values s2 (f a))))))
   
-  (define-instance (Applicative (PtState :s1 :s2))
+  (define-instance (Applicative (PtState :s :s))
     (inline)
     (define (pure a)
       (PtSt%
@@ -84,7 +84,7 @@
           (let (values s3 b) = (run-state s2 st-b))
           (values s3 (fa-b->c a b))))))
   
-  (define-instance (Monad (PtState :s1 :s2))
+  (define-instance (Monad (PtState :s :s))
     (inline)
     (define (>>= st-a fa->mb)
       (PtSt%

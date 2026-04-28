@@ -14,11 +14,11 @@
    #:call-cc
    #:resetT
    #:reset
-   #:do-resetT
-   #:do-reset
+   #:pt-do-resetT
+   #:pt-do-reset
    #:shiftT
    #:shift
-   #:do-shiftT
+   #:pt-do-shiftT
 
    #:Cont
    #:run-cont
@@ -128,7 +128,7 @@
                                cont-b))
                     cont-a))))
 
-  (define-instance (Applicative (ContT :m :r1 :r2))
+  (define-instance (Applicative (ContT :m :r :r))
     (define pure pure-contT)
     (define lifta2 pt-lifta2-contT))
 
@@ -143,7 +143,7 @@
                                (a->contb a)))
                   cont-a))))
 
-  (define-instance (Monad (ContT :m :r1 :r2))
+  (define-instance (Monad (ContT :m :r :r))
     (define >>= bind-contT))
 
   (define-instance (PtApplicative (ContT :m))
@@ -176,19 +176,19 @@
   (define-instance (PtMonadTransformer ContT)
     (define pt-lift lift-contT)))
 
-(defmacro do-resetT (cl:&body body)
+(defmacro pt-do-resetT (cl:&body body)
   `(resetT
-    (do
+    (pt-do
      ,@body)))
 
-(defmacro do-reset (cl:&body body)
+(defmacro pt-do-reset (cl:&body body)
   `(reset
-    (do
+    (pt-do
      ,@body)))
 
-(defmacro do-shiftT ((cont-sym) cl:&body body)
+(defmacro pt-do-shiftT ((cont-sym) cl:&body body)
   `(shiftT
     (fn (,cont-sym)
-      (do
+      (pt-do
        ,@body))))
 
