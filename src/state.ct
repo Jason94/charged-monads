@@ -1,5 +1,5 @@
-(cl:defpackage #:indexed-monads/state
-  (:use #:coalton #:coalton-prelude #:indexed-monads)
+(cl:defpackage #:charged-monads/state
+  (:use #:coalton #:coalton-prelude #:charged-monads)
   (:export
    #:PtState
    #:run-state
@@ -7,10 +7,9 @@
    #:get
    #:put
    #:modify
-  )
-)
+  ))
 
-(cl:in-package #:indexed-monads/state)
+(cl:in-package #:charged-monads/state)
 
 (coalton-toplevel
 
@@ -101,13 +100,3 @@
           (let (values s2 a) = (run-state s1 st-a))
           (run-state s2 (fa->mb a))))))
   )
-
-(cl:defun test ()
-  (coalton
-    (run-state 0
-      (pt-do
-        get
-        (modify (fn (x) (<> "100" (show-as-string x))))
-        (let y = 10)
-        (put y)
-        ))))

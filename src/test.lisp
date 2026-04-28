@@ -35,12 +35,22 @@
               (pt-lift (write-line "Number >= 0"))))))
        (pure Unit))))))
 
-(coalton
- (the (List String)
-      (reset
-       (pure (make-list "10")))))
+;; (coalton
+;;  (the (List String)
+;;       (reset
+;;        (pure (make-list "10")))))
 
         ;; (x <- (shift
         ;;        (fn (k)
         ;;          (make-list (k 1) (k 2) (k 3)))))
         ;; (pure (* x 10)))))
+
+(cl:defun test-st ()
+  (coalton
+    (run-state 0
+      (pt-do
+        get
+        (modify (fn (x) (<> "100" (show-as-string x))))
+        (let y = 10)
+        (put y)
+        ))))
