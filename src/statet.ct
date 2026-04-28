@@ -124,4 +124,7 @@
           (>>= (run-stateT s1 st-a)
                (fn ((Tuple s2 a))
                  (run-stateT s2 (fa->m-b a))))))))
+
+  (define-instance (PtMonadTransformer PtStateT)
+    (define pt-lift lift-stateT))
   )
