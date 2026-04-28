@@ -69,7 +69,7 @@
                  (Tuple s2 (f a)))
                (run-stateT s1 st))))))
   
-  (define-instance (Applicative :m => Applicative (PtStateT :m :s1 :s2))
+  (define-instance (Monad :m => Applicative (PtStateT :m :s1 :s2))
     (inline)
     (define (pure a)
       (PtStT%
@@ -78,11 +78,11 @@
     (inline)
     (define (lifta2 fa-b->c st-a st-b)
       (PtStT%
-        (fn (s)
-          (lifta2 (fn ((Tuple _ a) (Tuple _ b))
-                    (Tuple s (fa-b->c a b)))
-                  (run-stateT s st-a)
-                  (run-stateT s st-b))))))
+        (fn (s1)
+          (do
+           ((Tuple s2 a) <- (run-stateT s1 st-a))
+           ((Tuple s3 b) <- (run-stateT s2 st-b))
+           (pure (Tuple s3 (fa-b->c a b))))))))
   
   (define-instance (Monad :m => Monad (PtStateT :m :s1 :s2))
     (inline)

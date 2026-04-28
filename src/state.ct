@@ -53,8 +53,8 @@
     (define (map f st)
       (PtSt%
         (fn (s)
-          (values s 
-                  (f (eval-state s st)))))))
+          (let (values s2 a) = (run-state s st))
+          (values s2 (f a))))))
   
   (define-instance (Applicative (PtState :s :s))
     (inline)

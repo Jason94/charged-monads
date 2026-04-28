@@ -78,7 +78,7 @@
                         (a->r2 a)))))))))
 
   (inline)
-  (declare resetT (Monad :m => ContT :m :r :a :a -> :m :r))
+  (declare resetT (Applicative :m => ContT :m :r :a :a -> :m :r))
   (define (resetT cont)
     (run-contT pure cont))
 
@@ -88,7 +88,7 @@
     (run-cont id cont))
 
   (inline)
-  (declare shiftT (Monad :m => ((:a -> :m :r2) -> :m :r1) -> ContT :m :r1 :r2 :a))
+  (declare shiftT (((:a -> :m :r2) -> :m :r1) -> ContT :m :r1 :r2 :a))
   (define (shiftT a->r2-->r1)
     (ContT%
      (fn (a->r2)
@@ -166,8 +166,6 @@
   (define-instance (PtMonad (ContT :m))
     (define pt-bind pt-bind-contT))
 
-  (define-type-alias (Foo :r1 :r2 :m :a) (ContT :m :r1 :r2 :a))
-
   (inline)
   (declare lift-contT (Monad :m => :m :a -> ContT :m :r :r :a))
   (define (lift-contT m)
@@ -176,9 +174,7 @@
        (>>= m a->mr))))
 
   (define-instance (PtMonadTransformer ContT)
-    (define pt-lift lift-contT))
-
-  )
+    (define pt-lift lift-contT)))
 
 (defmacro do-resetT (cl:&body body)
   `(resetT
