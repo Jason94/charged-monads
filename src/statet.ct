@@ -1,5 +1,5 @@
-(cl:defpackage #:indexed-monads/stateT
-  (:use #:coalton #:coalton-prelude #:indexed-monads)
+(cl:defpackage #:charged-monads/stateT
+  (:use #:coalton #:coalton-prelude #:charged-monads)
   (:export
    #:PtStateT
    #:run-stateT
@@ -12,7 +12,7 @@
    #:modify-stateT
   ))
 
-(cl:in-package #:indexed-monads/stateT)
+(cl:in-package #:charged-monads/stateT)
 
 (coalton-toplevel
 

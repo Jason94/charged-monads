@@ -18,6 +18,7 @@
    #:do-reset
    #:shiftT
    #:shift
+   #:do-shiftT
 
    #:Cont
    #:run-cont
@@ -188,3 +189,10 @@
   `(reset
     (do
      ,@body)))
+
+(defmacro do-shiftT ((cont-sym) cl:&body body)
+  `(shiftT
+    (fn (,cont-sym)
+      (do
+       ,@body))))
+
