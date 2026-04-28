@@ -48,7 +48,7 @@
       (fn (s1)
         (values (f-st s1) Unit))))
   
-  (define-instance (Functor (PtState :s :s))
+  (define-instance (Functor (PtState :s1 :s2))
     (inline)
     (define (map f st)
       (PtSt%
@@ -56,7 +56,7 @@
           (let (values s2 a) = (run-state s st))
           (values s2 (f a))))))
   
-  (define-instance (Applicative (PtState :s :s))
+  (define-instance (Applicative (PtState :s1 :s2))
     (inline)
     (define (pure a)
       (PtSt%
@@ -84,7 +84,7 @@
           (let (values s3 b) = (run-state s2 st-b))
           (values s3 (fa-b->c a b))))))
   
-  (define-instance (Monad (PtState :s :s))
+  (define-instance (Monad (PtState :s1 :s2))
     (inline)
     (define (>>= st-a fa->mb)
       (PtSt%
