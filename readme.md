@@ -2,6 +2,12 @@
   <img src="repo/logo.png" alt="charged monads" width="320">
 </p>
 
+<p align="center">
+  <a href="https://jason94.github.io/charged-monads/">
+    Read the API Documentation
+  </a>
+</p>
+
 Charged Monads provides parameterized monads, which are capable of complex operations that regular monads do not support.
 
 Charged Monads currently includes:
