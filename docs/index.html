@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang=en>
+ <head>
+  <meta charset=UTF-8>
+  <title>API Documentation</title>
+  <style>:root{
+  --gap:28px;
+  --content-gap:20px;
+  --main-width:1100px;
+  --bg:#ffffff;
+  --fg:#1f1f1f;
+  --muted:#6c6c6c;
+  --border:#eeeeee;
+  --code-bg:#f5f5f5;
+  --code-block-bg:#1c1d21;
+  --radius:8px
+}
+*,:before,:after{box-sizing:border-box}
+html{overflow-y:scroll}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Helvetica Neue",Arial,sans-serif;
+  font-size:18px;
+  line-height:1.65;
+  background:var(--bg);
+  color:var(--fg)
+}
+a{color:inherit;text-decoration:none}
+a:hover{text-decoration:underline}
+.main{
+  position:relative;
+  min-height:100vh;
+  max-width:calc(var(--main-width) + var(--gap) * 2);
+  margin:auto;
+  padding:var(--gap)
+}
+.post-two-pane{width:100%}
+.post-two-pane .post-content{
+  display:flex;
+  gap:var(--gap);
+  align-items:flex-start
+}
+.sidebar{
+  width:320px;
+  position:sticky;
+  top:10px;
+  max-height:calc(100vh - 20px);
+  overflow:auto;
+  display:flex;
+  flex-direction:column;
+  padding-right:12px
+}
+.sidebar-header{
+  flex-shrink:0;
+  border-bottom:1px solid var(--border);
+  padding:0 0 12px 0
+}
+.sidebar-content{padding:12px 0 0 0}
+.sidebar ul{list-style:none;margin:0;padding:0}
+.sidebar li{margin:0 0 6px 0}
+.main-content{flex:1;min-width:0}
+.main-content > h1{margin-top:0}
+h1{margin:40px 0 32px;font-size:40px;line-height:1.15}
+h3{margin:32px 0 16px;font-size:24px;line-height:1.2}
+h4{margin:24px 0 10px;font-size:18pt;line-height:1.2}
+p{margin:0 0 16px 0}
+hr{margin: 30px 0;height: 2px;background: rgb(214, 214, 214);border: 0;}
+code{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+  margin:0 4px;
+  padding:4px 6px;
+  font-size:.78em;
+  line-height:1.5;
+  background:var(--code-bg);
+  border-radius:2px
+}
+.package-docstring,.docstring{white-space:pre-wrap}
+pre{margin:16px 0}
+pre code{
+  display:block;
+  margin:0;
+  padding:10px;
+  background:var(--code-block-bg);
+  color:#d5d5d6;
+  border-radius:var(--radius);
+  overflow:auto;
+  font-size:.85em
+}
+details{margin:12px 0 16px;border:0;padding:0}
+summary{cursor:pointer;font-weight:600;padding:6px 0}
+.methods-item{margin-top:5px}
+.instances-list{margin:8px 0 12px 20px}
+.instances-item{margin:4px 0}
+.constructors-list{margin:8px 0 12px 20px}
+.constructors-list li{margin:4px 0}
+.symbol-search{margin-top:10px;position:relative}
+.symbol-search input{
+  width:100%;
+  padding:8px;
+  border:1px solid #ddd;
+  border-radius:4px;
+  font-size:.9rem
+}
+.search-results{
+  display:none;
+  position:absolute;
+  left:0;
+  right:0;
+  top:calc(100% + 6px);
+  background:var(--bg);
+  border:1px solid #ddd;
+  border-radius:4px;
+  max-height:320px;
+  overflow:auto;
+  z-index:1000
+}
+.search-results.active{display:block}
+.search-result-item{padding:10px;border-bottom:1px solid var(--border);cursor:pointer;font-size:.85rem}
+.search-result-item:last-child{border-bottom:0}
+.search-result-item:hover,.search-result-item.active{background:#f8f9fa}
+.search-result-symbol{font-weight:700}
+.search-result-type{color:#666;font-size:.8rem;margin-left:8px}
+.search-result-package{color:#888;font-size:.8rem;margin-top:4px}
+@media (max-width:1050px){
+  .sidebar{display:none}
+  .post-two-pane .post-content{display:block}
+  .main{max-width:calc(820px + var(--gap) * 2)}
+}</style>
+ </head>
+ <body>
+  <main class=main>
+   <article class=post-two-pane>
+    <div class=post-content><aside class=sidebar>
+      <div class=sidebar-header>
+       <h3 id=reference>Reference</h3>
+       <div class=symbol-search>
+        <input type=text id=symbol-search-input
+               placeholder="Search symbols."
+               autocomplete=off>
+        <div class=search-results id=search-results></div></div></div>
+      <div class=sidebar-content>
+       <ul>
+        <li><a href=#charged-monads-package><code>CHARGED-MONADS</code></a>
+        <li><a href=#charged-monads-state-package><code>CHARGED-MONADS/STATE</code></a>
+        <li><a href=#charged-monads-statet-package><code>CHARGED-MONADS/STATET</code></a>
+        <li><a href=#charged-monads-contt-package><code>CHARGED-MONADS/CONTT</code></a></ul></div></aside>
+     <div class=main-content><h1 id=charged-monads-package>Package <code>CHARGED-MONADS</code></h1><div class=classes-content>
+       <h3 class=classes-header>Classes</h3><h4 id=charged-monads-ptapplicative-class><a href="#charged-monads-ptapplicative-class"><code>PtApplicative</code></a> <sup><sub>CLASS · <a href="https://github.com/Jason94/charged-monads/tree/master/src/main.ct#L17-L19">src</a></sub></sup></sub></sup></h4><code><a href="#charged-monads-ptapplicative-class">PtApplicative</a> :M</code><span>Methods:</span>
+       <ul class=methods-list>
+        <li class=methods-item><code>PT-PURE :: :A &rarr; :M :I :I :A</code>
+        <li class=methods-item><code>PT-LIFTA2 :: (:A * :B &rarr; :C) * :M :I :J :A * :M :J :K :B &rarr; :M :I :K :C</code></ul><details>
+        <summary>Instances</summary>
+        <ul class=instances-list>
+         <li class=instances-item><code><a href="#charged-monads-ptapplicative-class">PtApplicative</a> (<a href="#charged-monads-contt-contt-type">ContT</a> :M)</code>
+         <li class=instances-item><code><a href="#coalton-classes-monad-class">Monad</a> :M &rArr; <a href="#charged-monads-ptapplicative-class">PtApplicative</a> (<a href="#charged-monads-statet-ptstatet-type">PtStateT</a> :M)</code>
+         <li class=instances-item><code><a href="#charged-monads-ptapplicative-class">PtApplicative</a> <a href="#charged-monads-state-ptstate-type">PtState</a></code></ul></details><h4 id=charged-monads-ptmonad-class><a href="#charged-monads-ptmonad-class"><code>PtMonad</code></a> <sup><sub>CLASS · <a href="https://github.com/Jason94/charged-monads/tree/master/src/main.ct#L21-L22">src</a></sub></sup></sub></sup></h4><code><a href="#charged-monads-ptapplicative-class">PtApplicative</a> :M &rArr; <a href="#charged-monads-ptmonad-class">PtMonad</a> :M</code><span>Methods:</span>
+       <ul class=methods-list>
+        <li class=methods-item><code>PT-BIND :: :M :I :J :A * (:A &rarr; :M :J :K :B) &rarr; :M :I :K :B</code></ul><details>
+        <summary>Instances</summary>
+        <ul class=instances-list>
+         <li class=instances-item><code><a href="#charged-monads-ptmonad-class">PtMonad</a> (<a href="#charged-monads-contt-contt-type">ContT</a> :M)</code>
+         <li class=instances-item><code><a href="#coalton-classes-monad-class">Monad</a> :M &rArr; <a href="#charged-monads-ptmonad-class">PtMonad</a> (<a href="#charged-monads-statet-ptstatet-type">PtStateT</a> :M)</code>
+         <li class=instances-item><code><a href="#charged-monads-ptmonad-class">PtMonad</a> <a href="#charged-monads-state-ptstate-type">PtState</a></code></ul></details><h4
+    id=charged-monads-ptmonadtransformer-class><a href="#charged-monads-ptmonadtransformer-class"><code>PtMonadTransformer</code></a> <sup><sub>CLASS · <a href="https://github.com/Jason94/charged-monads/tree/master/src/main.ct#L24-L25">src</a></sub></sup></sub></sup></h4><code><a href="#charged-monads-ptmonadtransformer-class">PtMonadTransformer</a> :T</code><span>Methods:</span>
+       <ul class=methods-list>
+        <li class=methods-item><code>PT-LIFT :: <a href="#coalton-classes-monad-class">Monad</a> :M &rArr; :M :A &rarr; :T :M :I :I :A</code></ul><details>
+        <summary>Instances</summary>
+        <ul class=instances-list>
+         <li class=instances-item><code><a href="#charged-monads-ptmonadtransformer-class">PtMonadTransformer</a> <a href="#charged-monads-contt-contt-type">ContT</a></code>
+         <li class=instances-item><code><a href="#charged-monads-ptmonadtransformer-class">PtMonadTransformer</a> <a href="#charged-monads-statet-ptstatet-type">PtStateT</a></code></ul></details></div>
+      <hr><div class=macros-content>
+       <h3 class=macros-header>Macros</h3><h4 id=charged-monads-pt-do-macro><a href="#charged-monads-pt-do-macro"><code>PT-DO (&amp;BODY BODY)</code></a> <sup><sub>MACRO</sub></sup></h4></div>
+      <hr><h1 id=charged-monads-state-package>Package <code>CHARGED-MONADS/STATE</code></h1><div class=types-content>
+       <h3 class=types-header>Types</h3><h4 id=charged-monads-state-ptstate-type><a href="#charged-monads-state-ptstate-type"><code>PtState</code></a> <sup><sub>TYPE · <a href="https://github.com/Jason94/charged-monads/tree/master/src/state.ct#L17-L18">src</a></sub></sup></sub></sup></h4><details>
+        <summary>Instances</summary>
+        <ul class=instances-list>
+         <li class=instances-item><code><a href="#coalton-classes-applicative-class">Applicative</a> (<a href="#charged-monads-state-ptstate-type">PtState</a> :S :S)</code>
+         <li class=instances-item><code><a href="#coalton-classes-functor-class">Functor</a> (<a href="#charged-monads-state-ptstate-type">PtState</a> :S1 :S2)</code>
+         <li class=instances-item><code><a href="#coalton-classes-monad-class">Monad</a> (<a href="#charged-monads-state-ptstate-type">PtState</a> :S :S)</code>
+         <li class=instances-item><code><a href="#charged-monads-ptapplicative-class">PtApplicative</a> <a href="#charged-monads-state-ptstate-type">PtState</a></code>
+         <li class=instances-item><code><a href="#charged-monads-ptmonad-class">PtMonad</a> <a href="#charged-monads-state-ptstate-type">PtState</a></code>
+         <li class=instances-item><code><a href="#coalton-types-runtimerepr-class">RuntimeRepr</a> (<a href="#charged-monads-state-ptstate-type">PtState</a> :|0| :|1| :|2|)</code></ul></details></div>
+      <hr><div class=values-content>
+       <h3 class=values-header>Values</h3><h4 id=charged-monads-state-eval-state-value><a href="#charged-monads-state-eval-state-value"><code>(EVAL-STATE ST (PTST% F-STATE))</code></a> <sup><sub>FUNCTION · <a href="https://github.com/Jason94/charged-monads/tree/master/src/state.ct#L27-L29">src</a></sub></sup></sub></sup></h4><code>&forall; :S1 :S2 :A. :S1 * <a href="#charged-monads-state-ptstate-type">PtState</a> :S1 :S2 :A &rarr; :A</code><h4 id=charged-monads-state-get-value><a href="#charged-monads-state-get-value"><code>GET</code></a> <sup><sub>VALUE · <a href="https://github.com/Jason94/charged-monads/tree/master/src/state.ct#L32-L35">src</a></sub></sup></sub></sup></h4><code>&forall; :S. <a href="#charged-monads-state-ptstate-type">PtState</a> :S :S :S</code><h4 id=charged-monads-state-modify-value><a href="#charged-monads-state-modify-value"><code>(MODIFY F-ST)</code></a> <sup><sub>FUNCTION · <a href="https://github.com/Jason94/charged-monads/tree/master/src/state.ct#L46-L49">src</a></sub></sup></sub></sup></h4><code>&forall; :S1 :S2. (:S1 &rarr; :S2) &rarr; <a href="#charged-monads-state-ptstate-type">PtState</a> :S1 :S2 <a href="#coalton-unit-type">Unit</a></code><h4 id=charged-monads-state-put-value><a href="#charged-monads-state-put-value"><code>(PUT S)</code></a> <sup><sub>FUNCTION · <a href="https://github.com/Jason94/charged-monads/tree/master/src/state.ct#L39-L42">src</a></sub></sup></sub></sup></h4><code>&forall; :S2 :S1. :S2 &rarr; <a href="#charged-monads-state-ptstate-type">PtState</a> :S1 :S2 <a href="#coalton-unit-type">Unit</a></code><h4 id=charged-monads-state-run-state-value><a href="#charged-monads-state-run-state-value"><code>(RUN-STATE ST (PTST% F-STATE))</code></a> <sup><sub>FUNCTION · <a href="https://github.com/Jason94/charged-monads/tree/master/src/state.ct#L22-L23">src</a></sub></sup></sub></sup></h4><code>&forall; :S1 :S2 :A. :S1 * <a href="#charged-monads-state-ptstate-type">PtState</a> :S1 :S2 :A &rarr; :S2 * :A</code></div>
+      <hr><h1 id=charged-monads-statet-package>Package <code>CHARGED-MONADS/STATET</code></h1><div class=types-content>
+       <h3 class=types-header>Types</h3><h4 id=charged-monads-statet-ptstatet-type><a href="#charged-monads-statet-ptstatet-type"><code>PtStateT</code></a> <sup><sub>TYPE · <a href="https://github.com/Jason94/charged-monads/tree/master/src/statet.ct#L20-L21">src</a></sub></sup></sub></sup></h4><details>
+        <summary>Instances</summary>
+        <ul class=instances-list>
+         <li class=instances-item><code><a href="#coalton-classes-functor-class">Functor</a> :M &rArr; <a href="#coalton-classes-functor-class">Functor</a> (<a href="#charged-monads-statet-ptstatet-type">PtStateT</a> :M :S1 :S2)</code>
+         <li class=instances-item><code><a href="#coalton-classes-monad-class">Monad</a> :M &rArr; <a href="#coalton-classes-applicative-class">Applicative</a> (<a href="#charged-monads-statet-ptstatet-type">PtStateT</a> :M :S :S)</code>
+         <li class=instances-item><code><a href="#coalton-classes-monad-class">Monad</a> :M &rArr; <a href="#coalton-classes-monad-class">Monad</a> (<a href="#charged-monads-statet-ptstatet-type">PtStateT</a> :M :S :S)</code>
+         <li class=instances-item><code><a href="#coalton-classes-monad-class">Monad</a> :M &rArr; <a href="#charged-monads-ptapplicative-class">PtApplicative</a> (<a href="#charged-monads-statet-ptstatet-type">PtStateT</a> :M)</code>
+         <li class=instances-item><code><a href="#coalton-classes-monad-class">Monad</a> :M &rArr; <a href="#charged-monads-ptmonad-class">PtMonad</a> (<a href="#charged-monads-statet-ptstatet-type">PtStateT</a> :M)</code>
+         <li class=instances-item><code><a href="#charged-monads-ptmonadtransformer-class">PtMonadTransformer</a> <a href="#charged-monads-statet-ptstatet-type">PtStateT</a></code>
+         <li class=instances-item><code><a href="#coalton-types-runtimerepr-class">RuntimeRepr</a> (<a href="#charged-monads-statet-ptstatet-type">PtStateT</a> :|0| :|1| :|2| :|3|)</code></ul></details></div>
+      <hr><div class=values-content>
+       <h3 class=values-header>Values</h3><h4
+    id=charged-monads-statet-eval-statet-value><a href="#charged-monads-statet-eval-statet-value"><code>(EVAL-STATET S (PTSTT% F-ST))</code></a> <sup><sub>FUNCTION · <a href="https://github.com/Jason94/charged-monads/tree/master/src/statet.ct#L30-L33">src</a></sub></sup></sub></sup></h4><code>&forall; :S1 :M :S2 :A. <a href="#coalton-classes-functor-class">Functor</a> :M &rArr; :S1 * <a href="#charged-monads-statet-ptstatet-type">PtStateT</a> :M :S1 :S2 :A &rarr; :M :A</code><h4 id=charged-monads-statet-get-statet-value><a href="#charged-monads-statet-get-statet-value"><code>(GET-STATET)</code></a> <sup><sub>FUNCTION · <a href="https://github.com/Jason94/charged-monads/tree/master/src/statet.ct#L51-L54">src</a></sub></sup></sub></sup></h4><code>&forall; :M :S. <a href="#coalton-classes-applicative-class">Applicative</a> :M &rArr; Void &rarr; <a href="#charged-monads-statet-ptstatet-type">PtStateT</a> :M :S :S :S</code><h4
+    id=charged-monads-statet-lift-statet-value><a href="#charged-monads-statet-lift-statet-value"><code>(LIFT-STATET M)</code></a> <sup><sub>FUNCTION · <a href="https://github.com/Jason94/charged-monads/tree/master/src/statet.ct#L98-L103">src</a></sub></sup></sub></sup></h4><code>&forall; :M :A :S1. <a href="#coalton-classes-functor-class">Functor</a> :M &rArr; :M :A &rarr; <a href="#charged-monads-statet-ptstatet-type">PtStateT</a> :M :S1 :S1 :A</code><h4 id=charged-monads-statet-map-statet-value><a href="#charged-monads-statet-map-statet-value"><code>(MAP-STATET F-MSTA-&gt;NSTB M-STA)</code></a> <sup><sub>FUNCTION · <a href="https://github.com/Jason94/charged-monads/tree/master/src/statet.ct#L37-L40">src</a></sub></sup></sub></sup></h4><code>&forall; :M :S2 :A :N :S3 :B :S1. (:M (<a href="#coalton-classes-tuple-type">Tuple</a> :S2 :A) &rarr; :N (<a href="#coalton-classes-tuple-type">Tuple</a> :S3 :B)) * <a href="#charged-monads-statet-ptstatet-type">PtStateT</a> :M :S1 :S2 :A &rarr; <a href="#charged-monads-statet-ptstatet-type">PtStateT</a> :N :S1 :S3 :B</code><h4
+    id=charged-monads-statet-modify-statet-value><a href="#charged-monads-statet-modify-statet-value"><code>(MODIFY-STATET F-ST)</code></a> <sup><sub>FUNCTION · <a href="https://github.com/Jason94/charged-monads/tree/master/src/statet.ct#L58-L61">src</a></sub></sup></sub></sup></h4><code>&forall; :S1 :S2 :M. <a href="#coalton-classes-applicative-class">Applicative</a> :M &rArr; (:S1 &rarr; :S2) &rarr; <a href="#charged-monads-statet-ptstatet-type">PtStateT</a> :M :S1 :S2 <a href="#coalton-unit-type">Unit</a></code><h4 id=charged-monads-statet-put-statet-value><a href="#charged-monads-statet-put-statet-value"><code>(PUT-STATET S)</code></a> <sup><sub>FUNCTION · <a href="https://github.com/Jason94/charged-monads/tree/master/src/statet.ct#L44-L47">src</a></sub></sup></sub></sup></h4><code>&forall; :S2 :M :S1. <a href="#coalton-classes-applicative-class">Applicative</a> :M &rArr; :S2 &rarr; <a href="#charged-monads-statet-ptstatet-type">PtStateT</a> :M :S1 :S2 <a href="#coalton-unit-type">Unit</a></code><h4 id=charged-monads-statet-run-statet-value><a href="#charged-monads-statet-run-statet-value"><code>(RUN-STATET S (PTSTT% F-ST))</code></a> <sup><sub>FUNCTION · <a href="https://github.com/Jason94/charged-monads/tree/master/src/statet.ct#L25-L26">src</a></sub></sup></sub></sup></h4><code>&forall; :S1 :M :S2 :A. :S1 * <a href="#charged-monads-statet-ptstatet-type">PtStateT</a> :M :S1 :S2 :A &rarr; :M (<a href="#coalton-classes-tuple-type">Tuple</a> :S2 :A)</code></div>
+      <hr><h1 id=charged-monads-contt-package>Package <code>CHARGED-MONADS/CONTT</code></h1><div class=types-content>
+       <h3 class=types-header>Types</h3><h4 id=charged-monads-contt-cont-type><a href="#charged-monads-contt-cont-type"><code>Cont</code></a> <sup><sub>TYPE · <a href="https://github.com/Jason94/charged-monads/tree/master/src/contt.ct#L37-L37">src</a></sub></sup></sub></sup></h4><h4 id=charged-monads-contt-contt-type><a href="#charged-monads-contt-contt-type"><code>ContT</code></a> <sup><sub>TYPE · <a href="https://github.com/Jason94/charged-monads/tree/master/src/contt.ct#L33-L34">src</a></sub></sup></sub></sup></h4><details>
+        <summary>Instances</summary>
+        <ul class=instances-list>
+         <li class=instances-item><code><a href="#coalton-classes-applicative-class">Applicative</a> (<a href="#charged-monads-contt-contt-type">ContT</a> :M :R :R)</code>
+         <li class=instances-item><code><a href="#coalton-classes-functor-class">Functor</a> (<a href="#charged-monads-contt-contt-type">ContT</a> :M :R1 :R2)</code>
+         <li class=instances-item><code><a href="#coalton-classes-monad-class">Monad</a> (<a href="#charged-monads-contt-contt-type">ContT</a> :M :R :R)</code>
+         <li class=instances-item><code><a href="#charged-monads-ptapplicative-class">PtApplicative</a> (<a href="#charged-monads-contt-contt-type">ContT</a> :M)</code>
+         <li class=instances-item><code><a href="#charged-monads-ptmonad-class">PtMonad</a> (<a href="#charged-monads-contt-contt-type">ContT</a> :M)</code>
+         <li class=instances-item><code><a href="#charged-monads-ptmonadtransformer-class">PtMonadTransformer</a> <a href="#charged-monads-contt-contt-type">ContT</a></code>
+         <li class=instances-item><code><a href="#coalton-types-runtimerepr-class">RuntimeRepr</a> (<a href="#charged-monads-contt-contt-type">ContT</a> :|0| :|1| :|2| :|3|)</code></ul></details></div>
+      <hr><div class=values-content>
+       <h3 class=values-header>Values</h3><h4 id=charged-monads-contt-call-cc-value><a href="#charged-monads-contt-call-cc-value"><code>(CALL-CC A-&gt;CR2--&gt;CR1)</code></a> <sup><sub>FUNCTION · <a href="https://github.com/Jason94/charged-monads/tree/master/src/contt.ct#L70-L78">src</a></sub></sup></sub></sup></h4><code>&forall; :A :M :R2 :R3 :B :R1. ((:A &rarr; <a href="#charged-monads-contt-contt-type">ContT</a> :M :R2 :R3 :B) &rarr; <a href="#charged-monads-contt-contt-type">ContT</a> :M :R1 :R2 :A) &rarr; <a href="#charged-monads-contt-contt-type">ContT</a> :M :R1 :R2 :A</code><h4 id=charged-monads-contt-eval-cont-value><a href="#charged-monads-contt-eval-cont-value"><code>(EVAL-CONT CONT)</code></a> <sup><sub>FUNCTION · <a href="https://github.com/Jason94/charged-monads/tree/master/src/contt.ct#L57-L58">src</a></sub></sup></sub></sup></h4><code>&forall; :R. <a href="#charged-monads-contt-contt-type">ContT</a> <a href="#coalton-monad-identity-identity-type">Identity</a> :R :R :R &rarr; :R</code><h4 id=charged-monads-contt-eval-contt-value><a href="#charged-monads-contt-eval-contt-value"><code>(EVAL-CONTT CONT)</code></a> <sup><sub>FUNCTION · <a href="https://github.com/Jason94/charged-monads/tree/master/src/contt.ct#L46-L47">src</a></sub></sup></sub></sup></h4><code>&forall; :M :R. <a href="#coalton-classes-applicative-class">Applicative</a> :M &rArr; <a href="#charged-monads-contt-contt-type">ContT</a> :M :R :R :R &rarr; :M :R</code><h4 id=charged-monads-contt-lift-contt-value><a href="#charged-monads-contt-lift-contt-value"><code>(LIFT-CONTT M)</code></a> <sup><sub>FUNCTION · <a href="https://github.com/Jason94/charged-monads/tree/master/src/contt.ct#L171-L174">src</a></sub></sup></sub></sup></h4><code>&forall; :M :A :R. <a href="#coalton-classes-monad-class">Monad</a> :M &rArr; :M :A &rarr; <a href="#charged-monads-contt-contt-type">ContT</a> :M :R :R :A</code><h4 id=charged-monads-contt-map-contt-value><a href="#charged-monads-contt-map-contt-value"><code>(MAP-CONTT MR3-&gt;MR2 CONT)</code></a> <sup><sub>FUNCTION · <a href="https://github.com/Jason94/charged-monads/tree/master/src/contt.ct#L61-L66">src</a></sub></sup></sub></sup></h4><code>&forall; :M :R3 :R2 :R1 :A. (:M :R3 &rarr; :M :R2) * <a href="#charged-monads-contt-contt-type">ContT</a> :M :R1 :R2 :A &rarr; <a href="#charged-monads-contt-contt-type">ContT</a> :M :R1 :R3 :A</code><h4 id=charged-monads-contt-reset-value><a href="#charged-monads-contt-reset-value"><code>(RESET CONT)</code></a> <sup><sub>FUNCTION · <a href="https://github.com/Jason94/charged-monads/tree/master/src/contt.ct#L87-L88">src</a></sub></sup></sub></sup></h4><code>&forall; :R :A. <a href="#charged-monads-contt-contt-type">ContT</a> <a href="#coalton-monad-identity-identity-type">Identity</a> :R :A :A &rarr; :R</code><h4 id=charged-monads-contt-resett-value><a href="#charged-monads-contt-resett-value"><code>(RESETT CONT)</code></a> <sup><sub>FUNCTION · <a href="https://github.com/Jason94/charged-monads/tree/master/src/contt.ct#L82-L83">src</a></sub></sup></sub></sup></h4><code>&forall; :M :R :A. <a href="#coalton-classes-applicative-class">Applicative</a> :M &rArr; <a href="#charged-monads-contt-contt-type">ContT</a> :M :R :A :A &rarr; :M :R</code><h4 id=charged-monads-contt-run-cont-value><a href="#charged-monads-contt-run-cont-value"><code>(RUN-CONT FINAL-CONT CONT)</code></a> <sup><sub>FUNCTION · <a href="https://github.com/Jason94/charged-monads/tree/master/src/contt.ct#L51-L53">src</a></sub></sup></sub></sup></h4><code>&forall; :A :R2 :R1. (:A &rarr; :R2) * <a href="#charged-monads-contt-contt-type">ContT</a> <a href="#coalton-monad-identity-identity-type">Identity</a> :R1 :R2 :A &rarr; :R1</code><h4 id=charged-monads-contt-run-contt-value><a href="#charged-monads-contt-run-contt-value"><code>(RUN-CONTT CONT (CONTT% THUNK))</code></a> <sup><sub>FUNCTION · <a href="https://github.com/Jason94/charged-monads/tree/master/src/contt.ct#L41-L42">src</a></sub></sup></sub></sup></h4><code>&forall; :A :M :R2 :R1. (:A &rarr; :M :R2) * <a href="#charged-monads-contt-contt-type">ContT</a> :M :R1 :R2 :A &rarr; :M :R1</code><h4 id=charged-monads-contt-shift-value><a href="#charged-monads-contt-shift-value"><code>(SHIFT A-&gt;R2--&gt;R1)</code></a> <sup><sub>FUNCTION · <a href="https://github.com/Jason94/charged-monads/tree/master/src/contt.ct#L99-L102">src</a></sub></sup></sub></sup></h4><code>&forall; :A :R2 :R1. ((:A &rarr; :R2) &rarr; :R1) &rarr; <a href="#charged-monads-contt-contt-type">ContT</a> <a href="#coalton-monad-identity-identity-type">Identity</a> :R1 :R2 :A</code><h4 id=charged-monads-contt-shiftt-value><a href="#charged-monads-contt-shiftt-value"><code>(SHIFTT A-&gt;R2--&gt;R1)</code></a> <sup><sub>FUNCTION · <a href="https://github.com/Jason94/charged-monads/tree/master/src/contt.ct#L92-L95">src</a></sub></sup></sub></sup></h4><code>&forall; :A :M :R2 :R1. ((:A &rarr; :M :R2) &rarr; :M :R1) &rarr; <a href="#charged-monads-contt-contt-type">ContT</a> :M :R1 :R2 :A</code></div>
+      <hr><div class=macros-content>
+       <h3 class=macros-header>Macros</h3><h4
+    id=charged-monads-contt-pt-do-resett-macro><a href="#charged-monads-contt-pt-do-resett-macro"><code>PT-DO-RESETT (&amp;BODY BODY)</code></a> <sup><sub>MACRO</sub></sup></h4><h4
+    id=charged-monads-contt-pt-do-shiftt-macro><a href="#charged-monads-contt-pt-do-shiftt-macro"><code>PT-DO-SHIFTT ((CONT-SYM) &amp;BODY BODY)</code></a> <sup><sub>MACRO</sub></sup></h4><h4 id=charged-monads-contt-pt-do-reset-macro><a href="#charged-monads-contt-pt-do-reset-macro"><code>PT-DO-RESET (&amp;BODY BODY)</code></a> <sup><sub>MACRO</sub></sup></h4></div>
+      <hr>
+     </div>
+    </div>
+   </article>
+  </main>
+  <script>(function(){
+  function text(el){return (el&&el.textContent||"").trim()}
+  function buildIndex(main){
+    var items=[]
+    var pkg=""
+    var walker=document.createTreeWalker(main,NodeFilter.SHOW_ELEMENT,null,false)
+    var node=walker.currentNode
+    while(node){
+      var tag=node.tagName
+      if(tag==="H1"){
+        var code=node.querySelector("code")
+        pkg=text(code)||text(node)
+      }else if(tag==="H4"){
+        var a=node.querySelector('a[href^="#"]')
+        if(a){
+          var href=a.getAttribute("href")||""
+          var name=text(a)
+          var sub=node.querySelector("sub")
+          var typ=""
+          if(sub){
+            typ=text(sub).split("·")[0].trim()
+          }
+          if(href&&name){
+            items.push({name:name,href:href,typ:typ,pkg:pkg})
+          }
+        }
+      }
+      node=walker.nextNode()
+    }
+    return items
+  }
+  function el(tag,cls,txt){
+    var d=document.createElement(tag)
+    if(cls)d.className=cls
+    if(txt!=null)d.textContent=txt
+    return d
+  }
+  function setup(){
+    var input=document.getElementById("symbol-search-input")
+    var results=document.getElementById("search-results")
+    var main=document.querySelector(".main-content")
+    if(!input||!results||!main)return
+    var items=buildIndex(main)
+    var activeIndex=-1
+    function clear(){
+      results.innerHTML=""
+      results.classList.remove("active")
+      activeIndex=-1
+    }
+    function setActive(i){
+      var children=results.querySelectorAll(".search-result-item")
+      for(var k=0;k<children.length;k++)children[k].classList.remove("active")
+      if(i<0||i>=children.length)return
+      children[i].classList.add("active")
+      children[i].scrollIntoView({block:"nearest"})
+    }
+    function render(q){
+      q=(q||"").trim().toLowerCase()
+      results.innerHTML=""
+      activeIndex=-1
+      if(!q){
+        results.classList.remove("active")
+        return
+      }
+      var out=[]
+      for(var i=0;i<items.length;i++){
+        var it=items[i]
+        if(it.name.toLowerCase().indexOf(q)!==-1){
+          out.push(it)
+          if(out.length>=40)break
+        }
+      }
+      for(var j=0;j<out.length;j++){
+        var it2=out[j]
+        var row=el("div","search-result-item")
+        row.tabIndex=-1
+        row.dataset.href=it2.href
+        row.appendChild(el("span","search-result-symbol",it2.name))
+        if(it2.typ)row.appendChild(el("span","search-result-type",it2.typ))
+        if(it2.pkg)row.appendChild(el("div","search-result-package",it2.pkg))
+        row.addEventListener("mousedown",(function(href){
+          return function(e){
+            e.preventDefault()
+            window.location.hash=href.slice(1)
+            clear()
+            input.blur()
+          }
+        })(it2.href))
+        results.appendChild(row)
+      }
+      if(out.length)results.classList.add("active")
+      else results.classList.remove("active")
+    }
+    input.addEventListener("input",function(){render(input.value)})
+    input.addEventListener("focus",function(){if(input.value.trim())render(input.value)})
+    input.addEventListener("keydown",function(e){
+      var children=results.querySelectorAll(".search-result-item")
+      if(e.key==="Escape"){
+        clear()
+        input.blur()
+        return
+      }
+      if(!children.length)return
+      if(e.key==="ArrowDown"){
+        e.preventDefault()
+        activeIndex=Math.min(children.length-1,activeIndex+1)
+        setActive(activeIndex)
+        results.classList.add("active")
+        return
+      }
+      if(e.key==="ArrowUp"){
+        e.preventDefault()
+        activeIndex=Math.max(0,activeIndex-1)
+        setActive(activeIndex)
+        results.classList.add("active")
+        return
+      }
+      if(e.key==="Enter"){
+        if(activeIndex>=0&&activeIndex<children.length){
+          var href=children[activeIndex].dataset.href
+          if(href)window.location.hash=href.slice(1)
+          clear()
+          input.blur()
+        }
+      }
+    })
+    document.addEventListener("mousedown",function(e){
+      if(e.target===input||results.contains(e.target))return
+      clear()
+    })
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",setup)
+  else setup()
+})();</script>
+ </body>
+</html>
