@@ -69,3 +69,40 @@
                        (pure "-b"))))
   (is (== 0 state))
   (is (== "30-b" result)))
+
+(define-test test-lifta2-state-change ()
+  (let (values state result) =
+    (run-state 0
+               (lifta2 (fn (a b)
+                         (<> (show-as-string (+ a 10)) b))
+                       (do
+                         (modify (fn (x) (+ x 40)))
+                         (pure 20))
+                       (map show-as-string get))))
+  (is (== 40 state))
+  (is (== "3040" result)))
+
+(define-test test-bind-no-state-change ()
+  (let (values state result) =
+    (run-state 0
+               (>>= (pure "test")
+                    (fn (str)
+                      (do
+                       (x <- get)
+                       (pure (<> (show-as-string x) str)))))))
+  (is (== 0 state))
+  (is (== "0test" result)))
+
+(define-test test-bind-state-change ()
+  (let (values state result) =
+    (run-state 0
+               (>>= (do
+                     (put 10)
+                     (pure "test"))
+                    (fn (str)
+                      (do
+                       (x <- get)
+                       (modify (fn (x) (* 2 x)))
+                       (pure (<> (show-as-string x) str)))))))
+  (is (== 20 state))
+  (is (== "10test" result)))
