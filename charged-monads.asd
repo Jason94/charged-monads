@@ -5,7 +5,7 @@
   :serial t
   :components
   (
-    (:ct-file "main")
+    (:ct-file "base")
     (:ct-file "state")
     (:ct-file "statet")
     (:ct-file "contt")
